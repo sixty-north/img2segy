@@ -1,0 +1,7 @@
+segpy
+click
+numpy
+pillow
+exit_codes
+euclidian
+toml
