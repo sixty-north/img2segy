@@ -32,6 +32,7 @@ def convert(image: Path, config, segy, force):
     try:
         api.convert(image, segy, config, force=force)
     except Exception as e:
+        raise
         click.secho(str(e), fg="red")
         sys.exit(ExitCode.DATA_ERR)
     sys.exit(ExitCode.OK)

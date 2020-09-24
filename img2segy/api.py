@@ -3,10 +3,11 @@ from pathlib import Path
 
 import toml
 from PIL import Image, ImageOps
-from euclidian.cartesian2 import Point2
+from segpy.writer import write_segy
 
 from img2segy.geometry import Geometry
 from img2segy.image_dataset import ImageDataset
+from img2segy.trace_header_mapper import TraceHeaderMapper
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +35,10 @@ def convert(image_filepath: Path, segy_filepath: Path=None, config_filepath: Pat
 
     config = toml.load(config_filepath)
     geometry = Geometry.from_config(config)
-
-
+    trace_header_mapper = TraceHeaderMapper.from_config(config)
 
     image = Image.open(image_filepath)
-    grayscale_image = ImageOps.grayscale(image)
-    dataset = ImageDataset(grayscale_image, geometry)
-    pass
+    dataset = ImageDataset(image, geometry, trace_header_mapper)
+
+    with open(segy_filepath, 'wb') as segy_file:
+        write_segy(segy_file, dataset)
