@@ -31,6 +31,8 @@ class TraceHeaderMapper:
 
         self._place_trace_number_in_trace_number = place_trace_number_in_trace_number
         self._place_trace_number_in_crossline_number = place_trace_number_in_crossline_number
+        # TODO: Validate that at least one of these is True
+
 
         self._base_trace_number = base_trace_number
 
