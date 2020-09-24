@@ -132,6 +132,11 @@ class ImageDataset(Dataset):
         return self._geometry.coordinate_reference_system.zone_id
 
     def _measurement_system(self):
+        # TODO: This is wrong, because we don't know the vertical units and have no way of
+        #       representing that within SEG-Y. This value should actually pertain to the
+        #       horizontal units and comes into play with _coordinate_units_code is LENGTH.
+        #       The vertical units in SEG-Y are always milliseconds (or microseconds for the
+        #       sample interval), except when they're not.
         vertical_units = self._geometry.coordinate_reference_system.vertical_units.upper()
         if vertical_units in {METERS, "METRES", "M"}:
             return METERS
