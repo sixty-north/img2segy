@@ -13,7 +13,7 @@ from segpy.revisions import SegYRevision
 from segpy.toolkit import format_standard_textual_header
 from segpy.trace_header import TraceHeaderRev1, CoordinateUnits
 
-from img2segy.geometry import Geometry
+from img2segy.geometry import Geometry, MICROSECONDS_PER_MILLISECOND
 from img2segy.trace_header_mapper import TraceHeaderMapper
 from img2segy.version import __version__
 
@@ -61,12 +61,12 @@ class ImageDataset(Dataset):
             unassigned7=f"Horizontal (xy) units : {self._coordinate_units()}",
             unassigned8=f"Vertical (z/depth) units : {self._measurement_system()}",
             unassigned9=f"",
-            unassigned10=f"Start : x = {self._start_xy()[0]} y = {self._start_xy()[1]}",
-            unassigned11=f"End   : x = {self._end_xy()[0]} y = {self._end_xy()[1]}",
+            unassigned10=f"Left : x = {self._left_xy()[0]} y = {self._left_xy()[1]}",
+            unassigned11=f"Right  : x = {self._end_xy()[0]} y = {self._end_xy()[1]}",
             unassigned12=f"Depth : top-z = {self._top_z()} bottom-z = {self._bottom_z()}",
             unassigned13=f"",
             unassigned14=f"Data sample format : {self._data_sample_description()}",
-            unassigned15=f"Vertical sample interval : {self._sample_interval()}",
+            unassigned15=f"Vertical sample interval : {self._sample_interval()} {self._measurement_system()}/{MICROSECONDS_PER_MILLISECOND}",
         )
 
     @property
@@ -99,7 +99,6 @@ class ImageDataset(Dataset):
         position_fields = self._trace_header_mapper.position(position, self._xy_scalar)
         trace_number_fields = self._trace_header_mapper.trace_number(trace_index)
 
-        #trace_number = self._trace_number(trace_index)
         return TraceHeaderRev1(
             sample_interval=self._sample_interval(),
             coordinate_units=self._coordinate_units_code(),
@@ -177,11 +176,13 @@ class ImageDataset(Dataset):
         # Currently we only support 8-bit grayscale. In future we could add support for 16-bit.
         return DataSampleFormat.INT8
 
-    def _start_xy(self) -> Point2:
-        return self._geometry.start_xy
+    def _left_xy(self) -> Point2:
+        """Geographic position of the left side of the image."""
+        return self._geometry.left_xy
 
     def _end_xy(self) -> Point2:
-        return self._geometry.end_xy
+        """Geographic position of the right side of the image."""
+        return self._geometry.right_xy
 
     def _top_z(self):
         return self._geometry.top_z

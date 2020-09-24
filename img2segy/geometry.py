@@ -21,14 +21,14 @@ class Geometry:
     def from_config(cls, config):
         try:
             position = config["position"]
-            start = position["start"]
-            end = position["end"]
+            left = position["left"]
+            right = position["right"]
             depth = position["depth"]
             crs = config.get("coordinate-reference-system", {})
 
             return cls(
-                start_xy=Point2(start["x"], float(start["y"])),
-                end_xy=Point2(float(end["x"]), float(end["y"])),
+                left_xy=Point2(left["x"], float(left["y"])),
+                right_xy=Point2(float(right["x"]), float(right["y"])),
                 top_z=float(depth["top"]),
                 bottom_z=float(depth["bottom"]),
                 coordinate_reference_system=CoordinateReferenceSystem(
@@ -44,13 +44,13 @@ class Geometry:
 
     def __init__(
             self,
-            start_xy: Point2,
-            end_xy: Point2,
+            left_xy: Point2,
+            right_xy: Point2,
             top_z: float,
             bottom_z: float,
             coordinate_reference_system: CoordinateReferenceSystem
     ):
-        self._segment = Segment2(start_xy, end_xy)
+        self._segment = Segment2(left_xy, right_xy)
         self._top_z = top_z
         self._bottom_z = bottom_z
         self._coordinate_reference_system = coordinate_reference_system
@@ -59,11 +59,11 @@ class Geometry:
         return f"{type(self).__name__}(start_xy={self._segment.source}, end_xy={self._segment.target}, top_z={self._top_z}, bottom_z={self._bottom_z})"
 
     @property
-    def start_xy(self):
+    def left_xy(self):
         return self._segment.source
 
     @property
-    def end_xy(self):
+    def right_xy(self):
         return self._segment.target
 
     @property
@@ -80,7 +80,7 @@ class Geometry:
         Args:
             proportion: A number between zero and one inclusive.
 
-        Returns: A Point2 on the line between start and end.
+        Returns: A Point2 on the line between left and right.
         """
         return self._segment.lerp(proportion)
 
