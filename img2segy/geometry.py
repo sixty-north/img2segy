@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from euclidian.cartesian2 import Point2, Segment2
 
+MICROSECONDS_PER_MILLISECOND = 1000
+
 
 class ConfigurationError(Exception):
     pass
@@ -86,8 +88,12 @@ class Geometry:
 
     def sample_interval_z(self, num_samples):
         """The sample interval of the data.
+
+        Note the units are 1000 times smaller than the depth units.
+        This is in microseconds where two-way-time might be in milliseconds, or in millimetres
+        where depth might be in metres, or thousands of a foot if depth is in feet.
         """
-        return (self._bottom_z - self._top_z) / (num_samples - 1)
+        return MICROSECONDS_PER_MILLISECOND * (self._bottom_z - self._top_z) / (num_samples - 1)
 
     @property
     def coordinate_reference_system(self):
