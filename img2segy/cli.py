@@ -6,9 +6,11 @@ from click import Path
 from exit_codes import ExitCode
 
 from img2segy import api
+from img2segy.api import ConfigurationError
 from .version import __version__
 
 log_levels = tuple(logging._levelToName.values())
+
 
 @click.group()
 @click.option(
@@ -31,6 +33,9 @@ def cli(verbosity):
 def convert(image: Path, config, segy, force):
     try:
         api.convert(image, segy, config, force=force)
+    except ConfigurationError as e:
+        click.secho(str(e), fg="red")
+        sys.exit(ExitCode.CONFIG)
     except Exception as e:
         raise
         click.secho(str(e), fg="red")

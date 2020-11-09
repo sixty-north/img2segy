@@ -12,6 +12,10 @@ from img2segy.trace_header_mapper import TraceHeaderMapper
 logger = logging.getLogger(__name__)
 
 
+class ConfigurationError(Exception):
+    pass
+
+
 def convert(image_filepath: Path, segy_filepath: Path=None, config_filepath: Path=None, *, force=False):
     """Convert an image to SEG-Y.
 
@@ -33,7 +37,10 @@ def convert(image_filepath: Path, segy_filepath: Path=None, config_filepath: Pat
     logger.info("image_filepath = %s", image_filepath)
     logger.info("config_filepath = %s", config_filepath)
 
-    config = toml.load(config_filepath)
+    try:
+        config = toml.load(config_filepath)
+    except toml.decoder.TomlDecodeError as e:
+        raise ConfigurationError(f"Configuration error in {config_filepath}: {e}") from e
     geometry = Geometry.from_config(config)
     trace_header_mapper = TraceHeaderMapper.from_config(config)
 
