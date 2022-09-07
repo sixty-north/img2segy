@@ -4,6 +4,11 @@ img2segy
 
 A tool for converting images to SEG-Y files.
 
+.. note::
+   `img2segy` is offered under an open source non-permissive license, the AGPL 3. Alternative
+   commercial license terms may be available from Sixty North AS, as is help on using or
+   extending ``img2segy``. Only basic support and fixes are provided gratis.
+
 
 Installation
 ============
@@ -94,16 +99,3 @@ a trace-number of zero. You can control this by setting ``base-trace-number`` to
 such as one. If you need trace numbering to start from the right edge of the image, you should flip
 the image left-to-right before using ``img2segy``.
 
-Development
-===========
-
-Deployment
-----------
-
-::
-
-  $ pip install -e .[dev]
-  $ bumpversion minor
-  $ python setup.py sdist bdist_wheel
-  $ twine upload --config-file <path>/sixty-north.pypirc dist/*
-  $ git push origin
