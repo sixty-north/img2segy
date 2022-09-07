@@ -34,7 +34,7 @@ class ImageDataset(Dataset):
     ):
         self._image = image
         self._geometry = geometry
-        # Convert the image to a 8-bit grayscale (uint8 0 to 255) then shift to (int8 -128 to 127)
+        # Convert the image to an 8-bit grayscale (uint8 0 to 255) then shift to (int8 -128 to 127)
         self._array = (np.array(ImageOps.grayscale(image)) - 128).view(np.int8)
         self._trace_header_mapper = trace_header_mapper
         # We need to check the geometry and the image up front to determine the
