@@ -8,7 +8,7 @@ A tool for converting images to SEG-Y files.
 Installation
 ============
 
-Install ``gjenta`` from the PyPI with ``pip``::
+Install ``img2segy`` from the PyPI with ``pip``::
 
   python -m pip install img2segy
 
@@ -22,7 +22,7 @@ Basic usage
 Given an image file, such as a ``my_cross_section.png`` containing a vertical cross-section provide
 information about the location of the image in a text (TOML) file called ``my_cross_section.toml``,
 and run the ``img2segy convert`` command, supplying the image filename. If the TOML file has the
-same filename stem it will be discovered and used.
+same filename stem it will be discovered and used::
 
   img2segy convert my_cross_section.png
 
@@ -33,9 +33,7 @@ Configuration file format
 
 The configuration file contains subsections which describe the position of the image in geographical
 space, the coordinate reference system in use, and control over how the image should be represented
-in SEG-Y:
-
-.. code-block:: toml
+in SEG-Y::
 
     [position]
     left.x = 527501
@@ -69,6 +67,32 @@ Some of the fields, such as ``map-projection`` are ignored, but it's wise to inc
 that the date is more self-documenting and the meaning of the numbers is clear to others and your
 future self.
 
+The ``[position]`` section contains information which locates the corners of the supplied image in
+geographical space. The ``left.x`` and ``left.y`` entries are the geographic eastings and northings
+respectively of the left edge of the image. Similarly, the ``right.x`` and ``right.y`` entries are
+the geographic eastings and northings respectively of the right edge of the image. The ``depth.top``
+and ``depth.bottom`` entries give the depths of the top and bottom edges of the image.
+
+The number of traces in the resulting SEG-Y file will be equal to the horizontal number of pixels
+across the supplied image. The number of samples per trace will be equal to the vertical number of
+pixels down the image. If you want a different number of traces or samples than that which
+corresponds to the pixel dimensions of the image, you should pre-process the image using other tools
+before converting to SEG-Y.
+
+The ``[[segy]]`` section specifies how the SEG-Y data will be written and controls which header
+fields are used, and for what.
+
+The optional ``trace-position`` entries ``trace-position.use-source-coord-fields``,
+``trace-position.use-group-coord-fields`` and ``trace-position.use-cdp-coord-fields`` control
+whether the horizontal component of geographic position of the trace, as linearly interpolated
+between the two end points of the image, it written into the corresponding trace-header fields.
+
+The ``trace-number`` entries ``trace-number.use-trace-number-field`` and
+``trace-number.use-crossline-number-field`` control whether an integer trace number is written into
+the corresponding trace-header fields. By default, the left-most column of pixels will be given
+a trace-number of zero. You can control this by setting ``base-trace-number`` to some other value,
+such as one. If you need trace numbering to start from the right edge of the image, you should flip
+the image left-to-right before using ``img2segy``.
 
 Development
 ===========
