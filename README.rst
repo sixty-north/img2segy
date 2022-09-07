@@ -1,7 +1,3 @@
-Documentation_
-
-.. _Documentation: https://sixtynorthartifactory1.jfrog.io/artifactory/documentation/gjenta/index.html
-
 ========
 img2segy
 ========
@@ -79,6 +75,8 @@ Development
 
 Deployment
 ----------
+
+::
 
   $ pip install -e .[dev]
   $ bumpversion minor
